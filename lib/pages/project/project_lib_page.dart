@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:teajai/models/project.dart';
 import 'package:intl/intl.dart';
+
 class ProjectListPage extends StatefulWidget {
   const ProjectListPage({Key? key}) : super(key: key);
 
@@ -50,8 +51,17 @@ class _ProjectListPageState extends State<ProjectListPage> {
         //Callback function
         itemBuilder: (BuildContext context, int index) {
           var project = projects[index];
-          var myTextStyle = const TextStyle(fontSize: 12.0,color: Colors.black54);
+          var descriptionStyle =
+              const TextStyle(fontSize: 12.0, color: Colors.black54);
+          var amountStyle = const TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.black54,
+          );
+
           var formatter = NumberFormat('#,###,000');
+          var percentTeax = ((project.receiveAmount / project.targetAmount) * 100).toStringAsFixed(0);
+          var percent = int.tryParse(percentTeax);
           var target = formatter.format(project.targetAmount);
           return Card(
             child: Padding(
@@ -60,20 +70,65 @@ class _ProjectListPageState extends State<ProjectListPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(project.title),
-                  SizedBox(height: 8.0,),
-                  Text(project.description,style: myTextStyle),
-                  SizedBox(height: 8.0,),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Text(project.description, style: descriptionStyle),
+                  SizedBox(
+                    height: 8.0,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text('${project.duration.toString()} วัน', style: myTextStyle),
-                      Text('$target บาท', style: myTextStyle),
-
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('เป้าหมาย', style: descriptionStyle),
+                          Text('$target บาท', style: amountStyle),
+                        ],
+                      ),
+                      Text('$percentTeax %', style: descriptionStyle),
                     ],
                   ),
-                ],
-              ) ,
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: percent!,
+                        child: Container(
+                          height: 10.0,
+                          margin: const EdgeInsets.symmetric(vertical: 5.0,horizontal: 0.0),
+                          color: Colors.orange,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 100-percent,
+                        child: Container(
+                          height: 10.0,
+                          margin: const EdgeInsets.symmetric(vertical: 5.0,horizontal: 0.0),
+                          color: Color(0xFFE8E8E8),
+                        ),
+                      ),
+                    ],
+                  ),
 
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('${project.duration} วัน', style: descriptionStyle),
+                      Row(
+                        children: [
+                          const Icon(Icons.person, size: 14.0),
+                          Text('${project.doneteCount}', style: descriptionStyle),
+                        ],
+                      ),
+                      //Text('$percentText%', style: descriptionstyle),
+                    ],
+                  )
+                ],
+              ),
             ),
           ); //แบบยาว
           //return Text(projects[index].title); แบบสั้น
